@@ -21,7 +21,7 @@ require (
 	github.com/ochinchina/supervisord/util v0.0.0-20220721095143-c2527852d28f
 	github.com/ochinchina/supervisord/xmlrpcclient v0.0.0-20220520055329-8fdf6b62a44f
 	github.com/prometheus/client_golang v1.12.2
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.3
 )
 
 require (
