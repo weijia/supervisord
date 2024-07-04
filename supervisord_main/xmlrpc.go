@@ -1,4 +1,4 @@
-package main
+package supervisord_main
 
 import (
 	"crypto/sha1" //nolint:gosec

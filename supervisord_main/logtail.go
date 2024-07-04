@@ -1,9 +1,10 @@
-package main
+package supervisord_main
 
 import (
 	"fmt"
-	"github.com/ochinchina/supervisord/logger"
 	"net/http"
+
+	"github.com/ochinchina/supervisord/logger"
 
 	"github.com/gorilla/mux"
 )

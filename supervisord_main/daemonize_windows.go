@@ -1,6 +1,7 @@
+//go:build windows
 // +build windows
 
-package main
+package supervisord_main
 
 func Daemonize(logfile string, proc func()) {
 	proc()

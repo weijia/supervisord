@@ -1,11 +1,11 @@
 //go:build !release
 // +build !release
 
-package main
+package supervisord_main
 
 import (
 	"net/http"
 )
 
-//HTTP auto generated
+// HTTP auto generated
 var HTTP http.FileSystem = http.Dir("./webgui")
