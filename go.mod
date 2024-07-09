@@ -2,7 +2,7 @@ module github.com/weijia/supervisord
 
 go 1.22.2
 
-require github.com/ochinchina/supervisord/supervisord_main v0.0.0-00010101000000-000000000000
+require github.com/weijia/supervisord/supervisord_main v0.0.0-00010101000000-000000000000
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
