@@ -21,6 +21,7 @@ import (
 	"github.com/ochinchina/supervisord/logger"
 	"github.com/ochinchina/supervisord/signals"
 	"github.com/robfig/cron/v3"
+	"github.com/shirou/gopsutil/process"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -140,7 +141,8 @@ func (p *Process) addToCron() {
 
 // Start process
 // Args:
-//  wait - true, wait the program started or failed
+//
+//	wait - true, wait the program started or failed
 func (p *Process) Start(wait bool) {
 	log.WithFields(log.Fields{"program": p.GetName()}).Info("try to start program")
 	p.lock.Lock()
@@ -392,11 +394,37 @@ func (p *Process) getExitCodes() []int {
 }
 
 // check if the process is running or not
-//
 func (p *Process) isRunning() bool {
 	if p.cmd != nil && p.cmd.Process != nil {
 		if runtime.GOOS == "windows" {
-			proc, err := os.FindProcess(p.cmd.Process.Pid)
+			// proc, err := os.FindProcess(p.cmd.Process.Pid)
+			// 获取进程句柄
+			proc, err := process.NewProcess(int32(p.cmd.Process.Pid))
+			if err != nil {
+				fmt.Printf("Error getting process: %v\n", err)
+			}
+
+			// 获取进程名称
+			// name, err := p.Name()
+			// if err != nil {
+			// 	fmt.Printf("Error getting process name: %v\n", err)
+			// }
+			// fmt.Printf("Process Name: %s\n", name)
+
+			// // 获取CPU使用情况
+			// cpuPercent, err := p.Percent(0)
+			// if err != nil {
+			// 	fmt.Printf("Error getting CPU percent: %v\n", err)
+			// }
+			// fmt.Printf("CPU Usage: %.2f%%\n", cpuPercent)
+
+			// // 获取内存使用情况
+			// memInfo, err := p.MemoryInfo()
+			// if err != nil {
+			// 	fmt.Printf("Error getting memory info: %v\n", err)
+			// }
+			// fmt.Printf("Memory Usage: %d KB (RSS), %d KB (VMS)\n", memInfo.RSS/1024, memInfo.VMS/1024)
+
 			return proc != nil && err == nil
 		}
 		return p.cmd.Process.Signal(syscall.Signal(0)) == nil
@@ -506,7 +534,6 @@ func (p *Process) failToStartProgram(reason string, finishCb func()) {
 }
 
 // monitor if the program is in running before endTime
-//
 func (p *Process) monitorProgramIsRunning(endTime time.Time, monitorExited *int32, programExited *int32) {
 	// if time is not expired
 	for time.Now().Before(endTime) && atomic.LoadInt32(programExited) == 0 {
@@ -700,9 +727,9 @@ func (p *Process) changeStateTo(procState State) {
 // Signal sends signal to the process
 //
 // Args:
-//   sig - the signal to the process
-//   sigChildren - if true, sends the same signal to the process and its children
 //
+//	sig - the signal to the process
+//	sigChildren - if true, sends the same signal to the process and its children
 func (p *Process) Signal(sig os.Signal, sigChildren bool) error {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
@@ -727,9 +754,9 @@ func (p *Process) sendSignals(sigs []string, sigChildren bool) {
 // send signal to the process
 //
 // Args:
-//    sig - the signal to be sent
-//    sigChildren - if true, the signal also will be sent to children processes too
 //
+//	sig - the signal to be sent
+//	sigChildren - if true, the signal also will be sent to children processes too
 func (p *Process) sendSignal(sig os.Signal, sigChildren bool) error {
 	if p.cmd != nil && p.cmd.Process != nil {
 		log.WithFields(log.Fields{"program": p.GetName(), "signal": sig}).Info("Send signal to program")
