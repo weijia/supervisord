@@ -1,4 +1,4 @@
-module github.com/ochinchina/supervisord
+module github.com/weijia/supervisord
 
 go 1.22.2
 
